@@ -22,5 +22,7 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:api')->group( function () {
     Route::get('products', [ProductController::class, 'products']);
+    Route::get('add-location', [AuthController::class, 'addLocation']);
+    Route::get('update-location', [AuthController::class, 'updateLocation']);
 
 });

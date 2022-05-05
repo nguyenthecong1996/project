@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Location;
 use App\Jobs\SendEmailJob;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -101,14 +102,58 @@ class AuthController extends Controller
     {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
             $user = Auth::user(); 
+            if ($user->status == 0) {
+                return response()->json([
+                    'message' =>  'Email not verify',
+                ], 404);
+            }
             $success['token'] =  'Bearer '. $user->createToken('MyApp')->accessToken; 
             $success['name'] =  $user;
-   
+    
             return $this->sendResponse($success, 'User login successfully.');
         } 
         else{ 
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
         } 
+    }
+
+    public function addLocation(Request $request)
+    {
+        $user = $request->user();
+        $check = $user->locations()->where('type', $request->type)->first();
+
+        if($check && $check->type == 0) {
+            return response()->json([
+                'message' =>  "location exist",
+            ], 404);
+        }
+        $location = Location::create([
+            'type' => $request->type,
+            'long' => $request->long,
+            'lat' => $request->lat,
+            'user_id' => $user->id,
+        ]);
+        return response()->json([
+            'data' =>  $location,
+        ], 200);
+    }
+
+    public function updateLocation(Request $request)
+    {
+        $location = Location::find($request->location_id);
+
+        if(!$location) {
+            return response()->json([
+                'message' =>  "location exist",
+            ], 404);
+        }
+        $location->update([
+            'long' => $request->long,
+            'lat' => $request->lat,
+        ]);
+        return response()->json([
+            'data' =>  $location,
+        ], 200);
     }
 
 }
