@@ -3,23 +3,34 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Google\Cloud\Firestore\FirestoreClient;
-use Kreait\Firebase\Contract\Auth as FirebaseAuth;
+use App\Models\User;
 class AuthController extends Controller
 {
-    protected $auth;
-    public $firestore;
-    public function __construct(FirebaseAuth $auth, FirestoreClient $firestore) {
-        $this->auth = $auth;
-        $this->firestore = $firestore;
+    protected $user;
+    public function __construct(User $user) {
+        $this->user = $user;
     }
 
-    protected function register(Request $request){
-        $t =  $this->firestore->collection('dreams')->documents();
-        foreach ($t as $item1) {
-                dd($item1->id());
+    public function register(Request $request){
+        $checkUser = $this->user->where('phone_number', $request->phone_number)->first();
+        if($checkUser) {
+            return response()->json([
+                'message' =>  'phone number exist',
+            ], 200);
         }
-        // $te = $this->auth->getUser('JNEKxs0IfrQjnl7o2kI3QCEZYSE2');
+        $data = [
+            'name' => $request->name,
+            'phone_number' => $request->phone_number,
+            'password' => bcrypt($request->password),
+        ];
+        $user = $this->user->create($data);
+
+        // dispatch(new SendEmailJob(Ultilities::clearXSS($request->email), $lang, $code, User::VERIFY_ACCOUNT_TYPE));
+        return response()->json([
+            'message' =>  $user,
+        ], 200);
+
+        // $code = mt_rand(1000, 9999);
     }
 
 }
