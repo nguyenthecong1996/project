@@ -16,9 +16,11 @@ class SendEmailRegister extends Mailable
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($email, $code)
     {
-        //
+        $this->email = $email;
+        $this->code = $code;
+
     }
 
     /**
@@ -28,6 +30,8 @@ class SendEmailRegister extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
+        return $this->subject('Code')
+        ->from( $this->email, ' Food+ ')
+        ->view('email_verify_account',  ['code'=> $this->code]);
     }
 }
