@@ -30,7 +30,7 @@ class AuthController extends Controller
             'message' =>  $user,
         ], 200);
 
-        // $code = mt_rand(1000, 9999);
+        // $code = mt_rand(1000, 9999); 
     }
 
 }
