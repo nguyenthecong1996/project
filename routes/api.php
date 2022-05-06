@@ -18,6 +18,7 @@ use App\Http\Controllers\ProductController;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('verify', [AuthController::class, 'verify']);
+Route::post('re-code', [AuthController::class, 'recode']);
 Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:api')->group( function () {

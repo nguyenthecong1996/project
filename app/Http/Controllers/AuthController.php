@@ -156,4 +156,26 @@ class AuthController extends Controller
         ], 200);
     }
 
+    public function recode(Request $request)
+    {
+        $checkUser = $this->user->where('email', $request->email)->first();
+        if (!$checkUser) {
+            return response()->json([
+                'message' =>  'Email incorrect',
+            ], 200);
+        }
+
+        $code = mt_rand(1000, 9999);  
+        $data = [
+            'code' => $code
+        ];
+        $user = $checkUser->update($data);
+        dispatch(new SendEmailJob($request->email, $code));
+
+        return response()->json([
+            'message' => $this->user->where('email', $request->email)->first(),
+        ], 200);
+        
+    }
+
 }
