@@ -65,4 +65,12 @@ class ProductController extends Controller
             'data' =>  $list,
         ], 200);
     }
+
+    public function detailFood($id)
+    {
+        $list = Food::with(['store', 'foodTag', 'ingredient'])->where('id', $id)->first();
+        return response()->json([
+            'data' =>  $list,
+        ], 200);
+    }
 }

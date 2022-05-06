@@ -37,6 +37,11 @@ class Food extends Model
         return $this->hasMany(Review::class, 'food_id', 'id');
     }
 
+    public function ingredient()
+    {
+        return $this->hasMany(Ingredient::class, 'food_id', 'id');
+    }
+
     public function getRatingAttribute()
     {
         return $this->review()->avg('start') ?: 0;

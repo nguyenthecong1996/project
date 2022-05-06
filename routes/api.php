@@ -27,5 +27,6 @@ Route::middleware('auth:api')->group( function () {
     Route::post('create-category', [ProductController::class, 'createCategory']);
     Route::get('list-home', [ProductController::class, 'listHome']);
     Route::get('list-food', [ProductController::class, 'listFood']);
+    Route::get('detail-food/{id}', [ProductController::class, 'detailFood']);
 
 });
