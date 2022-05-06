@@ -22,7 +22,10 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:api')->group( function () {
     Route::get('products', [ProductController::class, 'products']);
-    Route::get('add-location', [AuthController::class, 'addLocation']);
-    Route::get('update-location', [AuthController::class, 'updateLocation']);
+    Route::post('add-location', [AuthController::class, 'addLocation']);
+    Route::post('update-location', [AuthController::class, 'updateLocation']);
+    Route::post('create-category', [ProductController::class, 'createCategory']);
+    Route::get('list-home', [ProductController::class, 'listHome']);
+    Route::get('list-food', [ProductController::class, 'listFood']);
 
 });
