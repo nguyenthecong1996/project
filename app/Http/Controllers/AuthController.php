@@ -39,7 +39,7 @@ class AuthController extends Controller
         $checkUser = $this->user->where('email', $request->email)->first();
         if($checkUser) {
             return response()->json([
-                'message' =>  'Email number exist',
+                'message' =>  'Email number exist ',
             ], 200);
         }
         $code = mt_rand(1000, 9999);  
