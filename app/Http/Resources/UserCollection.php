@@ -14,6 +14,16 @@ class UserCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        $paging = $this->resource->toArray();
+        if ($paging['data']) {
+            unset($paging['data']);
+        }
+        $listData = $this->collection;
+    
+        return   [ 
+            'data' =>  $listData, 
+            'paging' => $paging
+        ];
+
     }
 }

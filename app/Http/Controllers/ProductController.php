@@ -61,7 +61,7 @@ class ProductController extends Controller
         if (isset($request->search)) {
             $list =  $list->where('name', 'LIKE', "%$request->search%");
         }
-        $list = $list->paginate(4);
+        $list = $list->paginate(10);
         return response()->json([
             'data' =>  $list,
         ], 200);
@@ -80,7 +80,7 @@ class ProductController extends Controller
         $userId = $request->user()->id;
         $list = Order::with(['store', 'itemFood'])
             ->where('user_id', $userId)
-            ->where('status', 1)->get();
+            ->where('status', 1)->paginate(10);
 
         return response()->json([
             'data' => new UserCollection($list),
