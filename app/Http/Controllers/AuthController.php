@@ -8,11 +8,31 @@ use App\Models\Location;
 use App\Jobs\SendEmailJob;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Twilio\Rest\Client;
 class AuthController extends Controller
 {
     protected $user;
     public function __construct(User $user) {
         $this->user = $user;
+    }
+
+    public function sms($receiverNumber, $code)
+    {        
+        // dd($receiverNumber, $code);
+        $message = "Mã code của bạn là: ". $code;
+        try {
+  
+            $account_sid = getenv("TWILIO_SID");
+            $auth_token = getenv("TWILIO_TOKEN");
+            $twilio_number = getenv("TWILIO_FROM");
+  
+            $client = new Client($account_sid, $auth_token);
+            $client->messages->create($receiverNumber, [
+                'from' => $twilio_number, 
+                'body' => $message]);  
+        } catch (Exception $e) {
+            dd("Error: ". $e->getMessage());
+        }
     }
 
     public function register(Request $request){
@@ -26,11 +46,13 @@ class AuthController extends Controller
         $data = [
             'name' => $request->name,
             'email' => $request->email,
+            'phone_number' => $request->phone_number,
             'password' => bcrypt($request->password),
             'code' => $code
         ];
+        $this->sms($request->phone_number, $code);
         $user = $this->user->create($data);
-        dispatch(new SendEmailJob($request->email, $code));
+        // dispatch(new SendEmailJob($request->email, $code));
         return response()->json([
             'message' =>  $user,
         ], 200);

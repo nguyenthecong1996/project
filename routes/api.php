@@ -20,7 +20,7 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('verify', [AuthController::class, 'verify']);
 Route::post('re-code', [AuthController::class, 'recode']);
 Route::post('login', [AuthController::class, 'login']);
-
+Route::get('sendSMS', [AuthController::class, 'index']);
 Route::middleware('auth:api')->group( function () {
     Route::get('products', [ProductController::class, 'products']);
     Route::post('add-location', [AuthController::class, 'addLocation']);
