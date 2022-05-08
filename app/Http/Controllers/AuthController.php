@@ -178,4 +178,30 @@ class AuthController extends Controller
         
     }
 
+    public function logout(){   
+        if (Auth::check()) {
+            Auth::user()->token()->revoke();
+            return response()->json(['success' =>'logout_success'],200); 
+        }else{
+            return response()->json(['error' =>'api.something_went_wrong'], 500);
+        }
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+        $data = [];
+        if(isset($request->name)) {
+            $data['name'] = $request->name;
+        }
+
+        if(isset($request->phone_number)) {
+            $data['phone_number'] = $request->phone_number;
+        }
+        $user->update($data);
+        return response()->json([
+            'data' => $user,
+        ], 200);
+    }
+
 }

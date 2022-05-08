@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Food;
 use App\Models\Store;
-
+use App\Models\Order;
+use App\Http\Resources\UserCollection;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -72,5 +73,17 @@ class ProductController extends Controller
         return response()->json([
             'data' =>  $list,
         ], 200);
+    }
+
+    public function listFoodOrder(Request $request)
+    {
+        $userId = $request->user()->id;
+        $list = Order::with(['store', 'itemFood'])
+            ->where('user_id', $userId)
+            ->where('status', 1)->get();
+
+        return response()->json([
+            'data' => new UserCollection($list),
+        ], 200);  
     }
 }

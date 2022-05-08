@@ -29,5 +29,7 @@ Route::middleware('auth:api')->group( function () {
     Route::get('list-home', [ProductController::class, 'listHome']);
     Route::get('list-food', [ProductController::class, 'listFood']);
     Route::get('detail-food/{id}', [ProductController::class, 'detailFood']);
-
+    Route::get('list-food-ordered', [ProductController::class, 'listFoodOrder']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/update-profile', [AuthController::class, 'updateProfile']);
 });
