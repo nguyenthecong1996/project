@@ -226,4 +226,77 @@ class AuthController extends Controller
         ], 200);
     }
 
+    public function loginSocial(Request $request)
+    {
+        $request->validate([
+            'social_type' => 'required|max:255',
+            'social_id' => 'required|max:255',
+            'name' => 'nullable|max:255',
+            'email' => 'nullable|string|max:255|regex:/^([a-zA-Z0-9\+_\-]+)(\.[a-zA-Z0-9\+_\-]+)*@([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,6}$/|email',
+        ]);
+        try {
+            if ($request->social_type == "google") {
+                $model = User::where('social_id', $request->social_id)->first();
+            } else {
+                $model = User::where('social_facebook_id', $request->social_id)->first();
+            }        
+            
+            if (!$model && !empty($request->email)) {
+                $model = User::where('email', $request->email)->first();
+                if ($model) {
+                    if ($request->social_type == "google") {
+                        $model->update([
+                            'social_id' => $request->social_id,
+                            'social_type' => $request->social_type
+                        ]);
+                    } else {
+                        $model->update([
+                            'social_facebook_id' => $request->social_id,
+                            'social_type' => $request->social_type
+                        ]);
+                    }
+                }
+            }
+            $result = $this->loginOrCreate($model, $request);
+            $tokenResult = $result['tokenResult'];
+            $model = $result['model'];
+
+            $accessToken = 'Bearer ' . $tokenResult->accessToken;
+            $data = [
+                'message' => __('api.login_success'),
+                'access_token' => $accessToken,
+                'profile' => $model
+            ];
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return  $e->getMessage();
+        }
+    }
+
+    public function loginOrCreate($model, $request)
+    {
+        if (!$model) {
+            $data = [
+                'name' => $request->name,
+                'email' => $request->email,
+                'social_type' => $request->social_type,
+                'status' => 1
+            ];
+            if( $request->social_type == 'google') {
+                $data['social_id'] = $request->social_id;
+            } else {
+                $data['social_facebook_id'] = $request->social_id;
+            }
+            $model = User::create($data);
+        }
+
+        $tokenResult = $model->createToken('MyApp');
+
+        return [
+            'tokenResult' => $tokenResult,
+            'model' => $model
+        ];
+    }
+
+
 }

@@ -22,7 +22,10 @@ class User extends Authenticatable
         'password',
         'phone_number',
         'code',
-        'status'
+        'status',
+        'social_id',
+        'social_type',
+        'social_facebook_id'
     ];
 
     /**
