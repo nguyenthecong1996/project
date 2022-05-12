@@ -33,4 +33,5 @@ Route::middleware('auth:api')->group( function () {
     Route::get('list-food-ordered', [ProductController::class, 'listFoodOrder']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
+    Route::get('/list-cate', [ProductController::class, 'listCate']);
 });

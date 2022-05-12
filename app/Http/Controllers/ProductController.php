@@ -55,6 +55,14 @@ class ProductController extends Controller
         ], 200);
     }
 
+    public function listCate()
+    {
+        $listCate = Category::where('active', 0)->limit(5)->get();
+        return response()->json([
+            'list_cate' =>  $listCate
+        ], 200);
+    }
+
     public function listFood(Request $request)
     {
         $list = Food::with(['store', 'foodTag']);
