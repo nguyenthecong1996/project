@@ -29,19 +29,19 @@ class ProductController extends Controller
         $listCate = Category::where('active', 1)->limit(5)->get();
         $listBreakfask = Food::with(['store'])->whereHas('category', function ($query) {
             $query->where('type', '=', 0);
-        })->limit(2)->get();
+        })->get();
 
         $listlunch = Food::with(['store'])->whereHas('category', function ($query) {
             $query->where('type', '=', 1);
-        })->limit(2)->get();
+        })->get();
 
         $listdinner = Food::with(['store'])->whereHas('category', function ($query) {
             $query->where('type', '=', 2);
-        })->limit(2)->get();
+        })->get();
 
         $listOrder = Food::with(['store'])->whereHas('category', function ($query) {
             $query->where('type', '=', 3);
-        })->limit(2)->get();
+        })->get();
 
 
         $store = Store::where('active', 1)->limit(3)->get();
