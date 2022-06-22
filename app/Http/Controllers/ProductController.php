@@ -12,63 +12,6 @@ class ProductController extends Controller
 {
     public function createCategory(Request $request)
     {
-        $stripe = new \Stripe\StripeClient(
-            env('STRIPE_SECRET')
-          );
-
-        //   $data = $stripe->customers->all(['limit' => 3]);
-        //   dd($data['data']);
-        //   $stripe->customers->create([
-        //     'description' => 'My First Test Customer (created for API docs at https://www.stripe.com/docs/api)',
-        //   ]);
-
-        // $stripe->customers->createSource(
-        //     'cus_LuOhW6puNYKRSR',
-        //     ['source' => 'tok_visa',
-        //     ]
-        //   );
-
-        // $stripe->customers->updateSource(
-        //     'cus_LuOhW6puNYKRSR',
-        //     'card_1LCanQGWhquycQGHf4wjamqy',
-        //     ['name' => 'Jenny Rosen']
-        //   );
-
-        // $stripe->customers->update(
-        //     'cus_LuOhW6puNYKRSR',
-        //     ['default_source' => 'card_1LCanQGWhquycQGHf4wjamqy']
-        // );
-
-        // \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-        // $charge = \Stripe\Charge::create([
-        //     'amount' => 1000,
-        //     'currency' => 'usd',
-        //     'customer' => 'cus_LuOhW6puNYKRSR',
-        //     'source' => 'card_1LCanQGWhquycQGHf4wjamqy',
-        // ]);
-
-        // $stripe->accounts->create([
-        //     'type' => 'express',
-        //     'country' => 'US',
-        //     'email' => 'thecong1996@gmail.com',
-        //     'capabilities' => [
-        //       'card_payments' => ['requested' => true],
-        //       'transfers' => ['requested' => true],
-        //     ],
-        //   ]);
-
-        $data = $stripe->accountLinks->create(
-            [
-              'account' => 'acct_1LCfP42eJ6niEmXb',
-              'refresh_url' => 'https://24ba-222-252-30-49.ap.ngrok.io/test1',
-              'return_url' => 'https://24ba-222-252-30-49.ap.ngrok.io/test2',
-              'type' => 'account_onboarding',
-            ]
-          );
-
-        return response()->json([
-            'message' =>  $data,
-        ], 200);
         $data = [
             'name' => $request->name,
             'type' => $request->type,
@@ -79,16 +22,6 @@ class ProductController extends Controller
         return response()->json([
             'message' =>  $list,
         ], 200);
-    }
-
-    public function test1()
-    {
-        dd(1);
-    }
-
-    public function test2()
-    {
-        dd(2);
     }
 
     public function listHome()
@@ -124,8 +57,10 @@ class ProductController extends Controller
 
     public function listCate()
     {
-        $listCate = Category::paginate(5);
-        return response()->json($listCate);
+        $listCate = Category::where('active', 0)->limit(5)->get();
+        return response()->json([
+            'list_cate' =>  $listCate
+        ], 200);
     }
 
     public function listFood(Request $request)
@@ -158,13 +93,5 @@ class ProductController extends Controller
         return response()->json([
             'data' => new UserCollection($list),
         ], 200);  
-    }
-
-    public function deleteCategory($id)
-    {
-        Category::find($id)->delete();
-        return response()->json([
-            'delete' =>  'Ok'
-        ], 200);
     }
 }
