@@ -12,7 +12,6 @@ class ProductController extends Controller
 {
     public function createCategory(Request $request)
     {
-        dd(1);
         $data = [
             'name' => $request->name,
             'type' => $request->type,
